@@ -294,21 +294,21 @@ def render(
                 logging.info("Unstashing...")
                 check_output(['git', 'stash', 'pop', '-q'])
 
-    # Make replacements
-    if not user or not project:
-        try:
-            # git remote get-url origin
-            giturl = check_output(['git', 'remote', '-v']).strip().decode('utf-8').splitlines()[0]
-            start = giturl.find('.com/') + 5
-            userproj = giturl[start:]
-            end = userproj.find('.git')
-            user, project = userproj[:end].split('/')
-        except:
-            raise Exception("Please specify your github --username and --project.")
-
     if nocdn:
         svg_url = "{svgdir}/{name}.svg"
     else:
+        # Make replacements
+        if not user or not project:
+            try:
+                # git remote get-url origin
+                giturl = check_output(['git', 'remote', '-v']).strip().decode('utf-8').splitlines()[0]
+                start = giturl.find('.com/') + 5
+                userproj = giturl[start:]
+                end = userproj.find('.git')
+                user, project = userproj[:end].split('/')
+            except:
+                raise Exception("Please specify your github --username and --project.")
+
         svg_url = "https://rawgit.com/{user}/{project}/{branch}/{svgdir}/{name}.svg"
 
     if pngtrick:
